@@ -33,7 +33,6 @@ describe('products', () => {
       input: {
         name: 'String',
         price: 3042281,
-        updatedAt: '2023-01-22T12:50:21.352Z',
         authorId: scenario.product.two.authorId,
       },
     })

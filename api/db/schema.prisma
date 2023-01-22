@@ -28,7 +28,7 @@ model User {
   // Relation fields
   customers Customer[]
   products  Product[]
-  Invoice   Invoice[]
+  invoices  Invoice[]
 }
 
 model Product {

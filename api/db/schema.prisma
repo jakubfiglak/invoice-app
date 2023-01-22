@@ -24,4 +24,90 @@ model User {
   resetToken     String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  // Relation fields
+  customers Customer[]
+  products  Product[]
+  Invoice   Invoice[]
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation fields
+  author       User          @relation(fields: [authorId], references: [id])
+  authorId     String
+  invoiceItems InvoiceItem[]
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  street    String?
+  city      String?
+  postCode  String?
+  country   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation fields
+  customers Customer[]
+  invoices  Invoice[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation fields
+  address   Address?  @relation(fields: [addressId], references: [id])
+  addressId String?
+  invoices  Invoice[]
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  PAID
+}
+
+model Invoice {
+  id           String        @id @default(cuid())
+  description  String?
+  paymentDue   DateTime
+  paymentTerms Int           @default(14)
+  status       InvoiceStatus @default(DRAFT)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relation fields
+  customer        Customer?     @relation(fields: [customerId], references: [id])
+  customerId      String?
+  senderAddress   Address?      @relation(fields: [senderAddressId], references: [id])
+  senderAddressId String?
+  items           InvoiceItem[]
+  author          User          @relation(fields: [authorId], references: [id])
+  authorId        String
+}
+
+model InvoiceItem {
+  id        String   @id @default(cuid())
+  quantity  Int      @default(1)
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation fields
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
 }

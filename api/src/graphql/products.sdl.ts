@@ -5,9 +5,7 @@ export const schema = gql`
     price: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
-    author: User!
     authorId: String!
-    invoiceItems: [InvoiceItem]!
   }
 
   type Query {
@@ -18,13 +16,11 @@ export const schema = gql`
   input CreateProductInput {
     name: String!
     price: Int!
-    authorId: String!
   }
 
   input UpdateProductInput {
     name: String
     price: Int
-    authorId: String
   }
 
   type Mutation {

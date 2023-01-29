@@ -1,4 +1,6 @@
-import type { Product } from '@prisma/client'
+import { faker } from '@faker-js/faker'
+
+import type { CurrentUser } from '@redwoodjs/auth'
 
 import {
   products,
@@ -7,58 +9,381 @@ import {
   updateProduct,
   deleteProduct,
 } from './products'
-import type { StandardScenario } from './products.scenarios'
+import { type StandardScenario, testUserId } from './products.scenarios'
 
-// Generated boilerplate tests do not account for all circumstances
-// and can fail without adjustments, e.g. Float.
-//           Please refer to the RedwoodJS Testing Docs:
-//       https://redwoodjs.com/docs/testing#testing-services
-// https://redwoodjs.com/docs/testing#jest-expect-type-considerations
+const currentUser = {
+  id: testUserId,
+  email: faker.internet.email(),
+  name: faker.internet.userName(),
+  avatarUrl: faker.internet.url(),
+}
 
-describe('products', () => {
-  scenario('returns all products', async (scenario: StandardScenario) => {
-    const result = await products()
-
-    expect(result.length).toEqual(Object.keys(scenario.product).length)
+describe('products service', () => {
+  beforeEach(() => {
+    mockCurrentUser(currentUser as CurrentUser)
   })
 
-  scenario('returns a single product', async (scenario: StandardScenario) => {
-    const result = await product({ id: scenario.product.one.id })
+  describe('get all', () => {
+    scenario(
+      'returns all products created by current user',
+      async (scenario: StandardScenario) => {
+        const result = await products()
 
-    expect(result).toEqual(scenario.product.one)
+        expect(result.length).toEqual(
+          Object.values(scenario.product).filter(
+            (product) => product.authorId === currentUser.id
+          ).length
+        )
+
+        expect(result).toContainEqual(scenario.product.firstCreatedByTestUser)
+        expect(result).toContainEqual(scenario.product.secondCreatedByTestUser)
+        expect(result).not.toContainEqual(
+          scenario.product.firstCreatedByAnotherUser
+        )
+        expect(result).not.toContainEqual(
+          scenario.product.secondCreatedByAnotherUser
+        )
+      }
+    )
   })
 
-  scenario('creates a product', async (scenario: StandardScenario) => {
-    const result = await createProduct({
-      input: {
-        name: 'String',
-        price: 3042281,
-        authorId: scenario.product.two.authorId,
-      },
+  describe('get one', () => {
+    scenario(
+      'returns a product created by current user',
+      async (scenario: StandardScenario) => {
+        const result = await product({
+          id: scenario.product.firstCreatedByTestUser.id,
+        })
+        expect(result).toEqual(scenario.product.firstCreatedByTestUser)
+      }
+    )
+
+    scenario(
+      'does not return a product if created by another user',
+      async (scenario: StandardScenario) => {
+        const result = await product({
+          id: scenario.product.firstCreatedByAnotherUser.id,
+        })
+        expect(result).toBe(null)
+      }
+    )
+  })
+
+  describe('create', () => {
+    scenario('creates a product with relation to author', async () => {
+      const name = faker.random.word()
+      const price = faker.datatype.number()
+
+      const result = await createProduct({
+        input: {
+          name,
+          price,
+        },
+      })
+
+      expect(result.name).toBe(name)
+      expect(result.price).toBe(price)
+      expect(result.authorId).toBe(currentUser.id)
     })
 
-    expect(result.name).toEqual('String')
-    expect(result.price).toEqual(3042281)
-    expect(result.updatedAt).toEqual(new Date('2023-01-22T12:50:21.352Z'))
-    expect(result.authorId).toEqual(scenario.product.two.authorId)
-  })
+    scenario(
+      'does not create a product if name is an empty string',
+      async () => {
+        let result
 
-  scenario('updates a product', async (scenario: StandardScenario) => {
-    const original = (await product({ id: scenario.product.one.id })) as Product
-    const result = await updateProduct({
-      id: original.id,
-      input: { name: 'String2' },
+        try {
+          result = await createProduct({
+            input: { name: '', price: faker.datatype.number() },
+          })
+        } catch (error) {
+          expect(error).toMatchInlineSnapshot(`
+          [ZodError: [
+            {
+              "code": "too_small",
+              "minimum": 1,
+              "type": "string",
+              "inclusive": true,
+              "exact": false,
+              "message": "Name must be at least 1 character long",
+              "path": [
+                "name"
+              ]
+            }
+          ]]
+        `)
+        }
+
+        expect(result).toBeUndefined()
+      }
+    )
+
+    scenario('does not create a product if name is too long', async () => {
+      let result
+
+      try {
+        result = await createProduct({
+          input: {
+            name: faker.random.alphaNumeric(105),
+            price: faker.datatype.number(),
+          },
+        })
+      } catch (error) {
+        expect(error).toMatchInlineSnapshot(`
+          [ZodError: [
+            {
+              "code": "too_big",
+              "maximum": 100,
+              "type": "string",
+              "inclusive": true,
+              "exact": false,
+              "message": "Name must be at most 100 characters long",
+              "path": [
+                "name"
+              ]
+            }
+          ]]
+        `)
+      }
+
+      expect(result).toBeUndefined()
     })
 
-    expect(result.name).toEqual('String2')
+    scenario('does not create a product if price is negative', async () => {
+      let result
+
+      try {
+        result = await createProduct({
+          input: { name: faker.random.word(), price: -faker.datatype.number() },
+        })
+      } catch (error) {
+        expect(error).toMatchInlineSnapshot(`
+          [ZodError: [
+            {
+              "code": "too_small",
+              "minimum": 0,
+              "type": "number",
+              "inclusive": true,
+              "exact": false,
+              "message": "Price cannot be negative",
+              "path": [
+                "price"
+              ]
+            }
+          ]]
+        `)
+      }
+
+      expect(result).toBeUndefined()
+    })
   })
 
-  scenario('deletes a product', async (scenario: StandardScenario) => {
-    const original = (await deleteProduct({
-      id: scenario.product.one.id,
-    })) as Product
-    const result = await product({ id: original.id })
+  describe('update', () => {
+    scenario(
+      'updates a product if user is an author',
+      async (scenario: StandardScenario) => {
+        const newName = faker.random.word()
+        const newPrice = faker.datatype.number()
 
-    expect(result).toEqual(null)
+        const result = await updateProduct({
+          id: scenario.product.firstCreatedByTestUser.id,
+          input: { name: newName, price: newPrice },
+        })
+
+        expect(result.name).toBe(newName)
+        expect(result.price).toBe(newPrice)
+      }
+    )
+
+    scenario(
+      'does not update a product if name is an empty string',
+      async (scenario: StandardScenario) => {
+        let result
+
+        try {
+          result = await updateProduct({
+            id: scenario.product.firstCreatedByTestUser.id,
+            input: { name: '' },
+          })
+        } catch (error) {
+          expect(error).toMatchInlineSnapshot(`
+            [ZodError: [
+              {
+                "code": "too_small",
+                "minimum": 1,
+                "type": "string",
+                "inclusive": true,
+                "exact": false,
+                "message": "Name must be at least 1 character long",
+                "path": [
+                  "name"
+                ]
+              }
+            ]]
+          `)
+        }
+
+        expect(result).toBeUndefined()
+      }
+    )
+
+    scenario(
+      'does not update a product if name is too long',
+      async (scenario: StandardScenario) => {
+        let result
+
+        try {
+          result = await updateProduct({
+            id: scenario.product.firstCreatedByTestUser.id,
+            input: {
+              name: faker.random.alphaNumeric(105),
+            },
+          })
+        } catch (error) {
+          expect(error).toMatchInlineSnapshot(`
+            [ZodError: [
+              {
+                "code": "too_big",
+                "maximum": 100,
+                "type": "string",
+                "inclusive": true,
+                "exact": false,
+                "message": "Name must be at most 100 characters long",
+                "path": [
+                  "name"
+                ]
+              }
+            ]]
+          `)
+        }
+
+        expect(result).toBeUndefined()
+      }
+    )
+
+    scenario(
+      'does not update a product if price is negative',
+      async (scenario: StandardScenario) => {
+        let result
+
+        try {
+          result = await updateProduct({
+            id: scenario.product.firstCreatedByTestUser.id,
+            input: { price: -faker.datatype.number() },
+          })
+        } catch (error) {
+          expect(error).toMatchInlineSnapshot(`
+            [ZodError: [
+              {
+                "code": "too_small",
+                "minimum": 0,
+                "type": "number",
+                "inclusive": true,
+                "exact": false,
+                "message": "Price cannot be negative",
+                "path": [
+                  "price"
+                ]
+              }
+            ]]
+          `)
+        }
+
+        expect(result).toBeUndefined()
+      }
+    )
+
+    scenario(
+      'throws an error if user is trying to update a product created by another user',
+      async (scenario: StandardScenario) => {
+        const newName = faker.random.word()
+        const newPrice = faker.datatype.number()
+
+        let result
+
+        try {
+          result = await updateProduct({
+            id: scenario.product.firstCreatedByAnotherUser.id,
+            input: { name: newName, price: newPrice },
+          })
+        } catch (error) {
+          expect(error).toMatchInlineSnapshot(
+            `[GraphQLError: You don't have permission to do that]`
+          )
+        }
+
+        expect(result).toBeUndefined()
+      }
+    )
+
+    scenario(
+      'updates a product if user is an admin',
+      async (scenario: StandardScenario) => {
+        mockCurrentUser({ ...currentUser, roles: 'ADMIN' })
+
+        const newName = faker.random.word()
+        const newPrice = faker.datatype.number()
+
+        const result = await updateProduct({
+          id: scenario.product.secondCreatedByAnotherUser.id,
+          input: { name: newName, price: newPrice },
+        })
+
+        expect(result.name).toBe(newName)
+        expect(result.price).toBe(newPrice)
+      }
+    )
+  })
+
+  describe('delete', () => {
+    scenario(
+      'deletes a product if user is an author',
+      async (scenario: StandardScenario) => {
+        const result = await deleteProduct({
+          id: scenario.product.firstCreatedByTestUser.id,
+        })
+
+        expect(result.id).toBe(scenario.product.firstCreatedByTestUser.id)
+        expect(result.name).toBe(scenario.product.firstCreatedByTestUser.name)
+        expect(result.price).toBe(scenario.product.firstCreatedByTestUser.price)
+      }
+    )
+
+    scenario(
+      'throws an error if user is trying to delete a product created by another user',
+      async (scenario: StandardScenario) => {
+        let result
+
+        try {
+          result = await deleteProduct({
+            id: scenario.product.firstCreatedByAnotherUser.id,
+          })
+        } catch (error) {
+          expect(error).toMatchInlineSnapshot(
+            `[GraphQLError: You don't have permission to do that]`
+          )
+        }
+
+        expect(result).toBeUndefined()
+      }
+    )
+
+    scenario(
+      'deletes a product if user is an admin',
+      async (scenario: StandardScenario) => {
+        mockCurrentUser({ ...currentUser, roles: 'ADMIN' })
+
+        const result = await deleteProduct({
+          id: scenario.product.secondCreatedByAnotherUser.id,
+        })
+
+        expect(result.id).toBe(scenario.product.secondCreatedByAnotherUser.id)
+        expect(result.name).toBe(
+          scenario.product.secondCreatedByAnotherUser.name
+        )
+        expect(result.price).toBe(
+          scenario.product.secondCreatedByAnotherUser.price
+        )
+      }
+    )
   })
 })

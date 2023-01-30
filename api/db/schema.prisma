@@ -82,8 +82,9 @@ enum InvoiceStatus {
 model Invoice {
   id           String        @id @default(cuid())
   description  String?
-  paymentDue   DateTime
-  paymentTerms Int           @default(14)
+  issueDate    DateTime?
+  paymentDue   DateTime?
+  paymentTerms Int?
   status       InvoiceStatus @default(DRAFT)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt

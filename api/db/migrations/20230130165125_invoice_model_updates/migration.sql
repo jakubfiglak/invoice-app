@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Invoice" ADD COLUMN     "issueDate" TIMESTAMP(3),
+ALTER COLUMN "paymentDue" DROP NOT NULL,
+ALTER COLUMN "paymentTerms" DROP NOT NULL,
+ALTER COLUMN "paymentTerms" DROP DEFAULT;

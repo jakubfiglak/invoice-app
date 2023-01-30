@@ -23,28 +23,48 @@ export const schema = gql`
   }
 
   type Query {
-    invoices: [Invoice!]! @requireAuth
+    invoices(status: InvoiceStatus): [Invoice!]! @requireAuth
     invoice(id: String!): Invoice @requireAuth
   }
 
+  type CreateInvoiceItemInput {
+    productId: String!
+    quantity: Int!
+    price: Int!
+  }
+
   input CreateInvoiceInput {
+    billFromStreet: String
+    billFromCity: String
+    billFromPostCode: String
+    billFromCountry: String
+    clientName: String
+    clientEmail: String
+    clientStreet: String
+    clientCity: String
+    clientPostCode: String
+    clientCountry: String
+    issueDate: DateTime
     description: String
-    paymentDue: DateTime!
     paymentTerms: Int
     status: InvoiceStatus
-    customerId: String
-    senderAddressId: String
-    authorId: String!
+    items: [CreateInvoiceItemInput]
   }
 
   input UpdateInvoiceInput {
+    billFromStreet: String
+    billFromCity: String
+    billFromPostCode: String
+    billFromCountry: String
+    clientName: String
+    clientEmail: String
+    clientStreet: String
+    clientCity: String
+    clientPostCode: String
+    clientCountry: String
     description: String
-    paymentDue: DateTime
     paymentTerms: Int
-    status: InvoiceStatus
-    customerId: String
-    senderAddressId: String
-    authorId: String
+    items: [CreateInvoiceItemInput]
   }
 
   type Mutation {

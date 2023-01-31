@@ -14,7 +14,6 @@ export const draftInvoiceInputSchema = z.object({
   issueDate: z.union([z.string().datetime(), z.date()]).optional(),
   description: z.string().min(1).max(200).optional(),
   paymentTerms: z.number().int().positive().optional(),
-  status: z.enum(['DRAFT']).optional(),
   items: z
     .array(
       z.object({
@@ -26,6 +25,4 @@ export const draftInvoiceInputSchema = z.object({
     .optional(),
 })
 
-export const pendingInvoiceInputSchema = draftInvoiceInputSchema
-  .required()
-  .merge(z.object({ status: z.enum(['PENDING']) }))
+export const pendingInvoiceInputSchema = draftInvoiceInputSchema.required()

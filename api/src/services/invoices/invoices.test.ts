@@ -253,7 +253,7 @@ describe('invoices service', () => {
         const secondItemInput = {
           productId: scenario.product.two.id,
           price: faker.datatype.number(),
-          quantity: faker.datatype.number({ max: 10 }),
+          quantity: faker.datatype.number({ min: 1, max: 10 }),
         }
 
         const result = await createInvoice({
@@ -298,6 +298,59 @@ describe('invoices service', () => {
             representation: 'date',
           })
         )
+      }
+    )
+
+    scenario(
+      'creates an invoice with the status of PENDING if all fields are provided',
+      async (scenario: StandardScenario) => {
+        const clientCity = faker.address.city()
+        const clientCountry = faker.address.country()
+        const clientStreet = faker.address.street()
+        const clientPostCode = faker.address.zipCode()
+        const clientName = faker.internet.userName()
+        const clientEmail = faker.internet.email()
+
+        const firstItemInput = {
+          productId: scenario.product.one.id,
+          price: faker.datatype.number(),
+          quantity: faker.datatype.number({ min: 1, max: 10 }),
+        }
+
+        const secondItemInput = {
+          productId: scenario.product.two.id,
+          price: faker.datatype.number(),
+          quantity: faker.datatype.number({ min: 1, max: 10 }),
+        }
+
+        const billFromCity = faker.address.city()
+        const billFromCountry = faker.address.country()
+        const billFromStreet = faker.address.street()
+        const billFromPostCode = faker.address.zipCode()
+
+        const description = faker.random.words(10)
+        const issueDate = faker.date.past()
+
+        const result = await createInvoice({
+          input: {
+            billFromCity,
+            billFromCountry,
+            billFromPostCode,
+            billFromStreet,
+            clientCity,
+            clientCountry,
+            clientEmail,
+            clientName,
+            clientPostCode,
+            clientStreet,
+            description,
+            issueDate,
+            items: [firstItemInput, secondItemInput],
+            paymentTerms: faker.datatype.number({ min: 1, max: 30 }),
+          },
+        })
+
+        expect(result.status).toBe('PENDING')
       }
     )
   })

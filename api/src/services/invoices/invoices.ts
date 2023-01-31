@@ -6,7 +6,10 @@ import type {
 } from 'types/graphql'
 
 import { db } from 'src/lib/db'
-import { draftInvoiceInputSchema } from 'src/services/invoices/schemas'
+import {
+  draftInvoiceInputSchema,
+  pendingInvoiceInputSchema,
+} from 'src/services/invoices/schemas'
 
 export const invoices: QueryResolvers['invoices'] = ({ status }) => {
   return db.invoice.findMany({
@@ -23,6 +26,17 @@ export const invoice: QueryResolvers['invoice'] = ({ id }) => {
 export const createInvoice: MutationResolvers['createInvoice'] = ({
   input,
 }) => {
+  let parsedInput
+
+  const pendingInvoiceInputSchemaParseResult =
+    pendingInvoiceInputSchema.safeParse(input)
+
+  if (pendingInvoiceInputSchemaParseResult.success) {
+    parsedInput = pendingInvoiceInputSchemaParseResult.data
+  } else {
+    parsedInput = draftInvoiceInputSchema.parse(input)
+  }
+
   const {
     description,
     issueDate,
@@ -37,9 +51,8 @@ export const createInvoice: MutationResolvers['createInvoice'] = ({
     clientCountry,
     clientStreet,
     clientPostCode,
-    status,
     items,
-  } = draftInvoiceInputSchema.parse(input)
+  } = parsedInput
 
   return db.invoice.create({
     data: {
@@ -50,7 +63,6 @@ export const createInvoice: MutationResolvers['createInvoice'] = ({
           ? addDays(new Date(issueDate), paymentTerms)
           : undefined,
       paymentTerms,
-      status,
       senderAddress: {
         create: {
           city: billFromCity,
@@ -85,6 +97,9 @@ export const createInvoice: MutationResolvers['createInvoice'] = ({
             },
           }
         : undefined,
+      status: pendingInvoiceInputSchemaParseResult.success
+        ? 'PENDING'
+        : 'DRAFT',
       author: { connect: { id: context.currentUser?.id } },
     },
   })

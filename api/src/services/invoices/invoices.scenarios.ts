@@ -1,6 +1,12 @@
 import { faker } from '@faker-js/faker'
 import type { Prisma, Invoice, Product, User } from '@prisma/client'
 
+import {
+  invoiceCreateArgsDataFactory,
+  productCreateArgsDataFactory,
+  userCreateArgsDataFactory,
+} from 'src/test/factories'
+
 export const testUserId = faker.datatype.uuid()
 const anotherUserId = faker.datatype.uuid()
 
@@ -20,114 +26,62 @@ export const standard = defineScenario<
 >({
   user: {
     testUser: {
-      data: {
-        id: testUserId,
-        email: faker.internet.email(),
-        name: faker.internet.userName(),
-        hashedPassword: faker.internet.password(),
-        salt: faker.internet.password(),
-      },
+      data: userCreateArgsDataFactory.build({ id: testUserId }),
     },
     anotherUser: {
-      data: {
-        id: anotherUserId,
-        email: faker.internet.email(),
-        name: faker.internet.userName(),
-        hashedPassword: faker.internet.password(),
-        salt: faker.internet.password(),
-      },
+      data: userCreateArgsDataFactory.build({ id: anotherUserId }),
     },
   },
   product: {
     one: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: testUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: testUserId }),
     },
     two: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: testUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: testUserId }),
     },
     three: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: anotherUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: anotherUserId }),
     },
     four: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: anotherUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: anotherUserId }),
     },
   },
   invoice: {
     draftCreatedByTestUser: {
-      data: {
-        description: faker.random.words(3),
-        issueDate: faker.date.past().toISOString(),
-        paymentDue: faker.date.future().toISOString(),
-        paymentTerms: 7,
+      data: invoiceCreateArgsDataFactory.build({
         status: 'DRAFT',
         authorId: testUserId,
-      },
+      }),
     },
     pendingCreatedByTestUser: {
-      data: {
-        description: faker.random.words(3),
-        issueDate: faker.date.past().toISOString(),
-        paymentDue: faker.date.future().toISOString(),
-        paymentTerms: 7,
+      data: invoiceCreateArgsDataFactory.build({
         status: 'PENDING',
         authorId: testUserId,
-      },
+      }),
     },
     paidCreatedByTestUser: {
-      data: {
-        description: faker.random.words(3),
-        issueDate: faker.date.past().toISOString(),
-        paymentDue: faker.date.future().toISOString(),
-        paymentTerms: 7,
+      data: invoiceCreateArgsDataFactory.build({
         status: 'PAID',
         authorId: testUserId,
-      },
+      }),
     },
     draftCreatedByAnotherUser: {
-      data: {
-        description: faker.random.words(3),
-        issueDate: faker.date.past().toISOString(),
-        paymentDue: faker.date.future().toISOString(),
-        paymentTerms: 7,
+      data: invoiceCreateArgsDataFactory.build({
         status: 'DRAFT',
         authorId: anotherUserId,
-      },
+      }),
     },
     pendingCreatedByAnotherUser: {
-      data: {
-        description: faker.random.words(3),
-        issueDate: faker.date.past().toISOString(),
-        paymentDue: faker.date.future().toISOString(),
-        paymentTerms: 7,
+      data: invoiceCreateArgsDataFactory.build({
         status: 'PENDING',
         authorId: anotherUserId,
-      },
+      }),
     },
     paidCreatedByAnotherUser: {
-      data: {
-        description: faker.random.words(3),
-        issueDate: faker.date.past().toISOString(),
-        paymentDue: faker.date.future().toISOString(),
-        paymentTerms: 7,
+      data: invoiceCreateArgsDataFactory.build({
         status: 'PAID',
         authorId: anotherUserId,
-      },
+      }),
     },
   },
 })

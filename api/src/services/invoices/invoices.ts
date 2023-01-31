@@ -131,7 +131,4 @@ export const Invoice: InvoiceRelationResolvers = {
   items: (_obj, { root }) => {
     return db.invoice.findUnique({ where: { id: root?.id } }).items()
   },
-  author: (_obj, { root }) => {
-    return db.invoice.findUnique({ where: { id: root?.id } }).author()
-  },
 }

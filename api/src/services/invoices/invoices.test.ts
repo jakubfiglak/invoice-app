@@ -5,6 +5,12 @@ import { formatISO } from 'date-fns'
 import type { CurrentUser } from '@redwoodjs/auth'
 
 import { db } from 'src/lib/db'
+import {
+  createInvoiceItemInputFactory,
+  createCustomerInputFactory,
+  createAddressInputFactory,
+  createInvoiceInputFactory,
+} from 'src/test/factories'
 
 import {
   invoices,
@@ -115,9 +121,9 @@ describe('invoices service', () => {
       try {
         result = await createInvoice({
           input: {
-            billFromCity: faker.random.alphaNumeric(50),
-            billFromCountry: faker.random.alphaNumeric(50),
-            billFromPostCode: faker.random.alphaNumeric(50),
+            billFromCity: faker.random.alphaNumeric(200),
+            billFromCountry: faker.random.alphaNumeric(200),
+            billFromPostCode: faker.random.alphaNumeric(20),
           },
         })
       } catch (error) {
@@ -125,11 +131,11 @@ describe('invoices service', () => {
           [ZodError: [
             {
               "code": "too_big",
-              "maximum": 30,
+              "maximum": 100,
               "type": "string",
               "inclusive": true,
               "exact": false,
-              "message": "String must contain at most 30 character(s)",
+              "message": "String must contain at most 100 character(s)",
               "path": [
                 "billFromCity"
               ]
@@ -147,11 +153,11 @@ describe('invoices service', () => {
             },
             {
               "code": "too_big",
-              "maximum": 30,
+              "maximum": 100,
               "type": "string",
               "inclusive": true,
               "exact": false,
-              "message": "String must contain at most 30 character(s)",
+              "message": "String must contain at most 100 character(s)",
               "path": [
                 "billFromCountry"
               ]
@@ -175,17 +181,19 @@ describe('invoices service', () => {
     )
 
     scenario('creates related sender address record', async () => {
-      const billFromCity = faker.address.city()
-      const billFromCountry = faker.address.country()
-      const billFromStreet = faker.address.street()
-      const billFromPostCode = faker.address.zipCode()
+      const {
+        billFromCity,
+        billFromCountry,
+        billFromPostCode,
+        billFromStreet,
+      } = createAddressInputFactory.build()
 
       const result = await createInvoice({
         input: {
           billFromCity,
           billFromCountry,
-          billFromStreet,
           billFromPostCode,
+          billFromStreet,
         },
       })
 
@@ -199,15 +207,18 @@ describe('invoices service', () => {
         street: billFromStreet,
         postCode: billFromPostCode,
       })
+      expect(result.status).toBe('DRAFT')
     })
 
     scenario('creates related customer record', async () => {
-      const clientCity = faker.address.city()
-      const clientCountry = faker.address.country()
-      const clientStreet = faker.address.street()
-      const clientPostCode = faker.address.zipCode()
-      const clientName = faker.internet.userName()
-      const clientEmail = faker.internet.email()
+      const {
+        clientCity,
+        clientCountry,
+        clientEmail,
+        clientName,
+        clientPostCode,
+        clientStreet,
+      } = createCustomerInputFactory.build()
 
       const result = await createInvoice({
         input: {
@@ -239,22 +250,18 @@ describe('invoices service', () => {
         street: clientStreet,
         postCode: clientPostCode,
       })
+      expect(result.status).toBe('DRAFT')
     })
 
     scenario(
       'creates related invoice item records',
       async (scenario: StandardScenario) => {
-        const firstItemInput = {
+        const firstItemInput = createInvoiceItemInputFactory.build({
           productId: scenario.product.one.id,
-          price: faker.datatype.number(),
-          quantity: faker.datatype.number({ min: 1, max: 10 }),
-        }
-
-        const secondItemInput = {
+        })
+        const secondItemInput = createInvoiceItemInputFactory.build({
           productId: scenario.product.two.id,
-          price: faker.datatype.number(),
-          quantity: faker.datatype.number({ min: 1, max: 10 }),
-        }
+        })
 
         const result = await createInvoice({
           input: {
@@ -279,6 +286,7 @@ describe('invoices service', () => {
         })
 
         expect(secondItem).toMatchObject(secondItemInput)
+        expect(result.status).toBe('DRAFT')
       }
     )
 
@@ -298,98 +306,28 @@ describe('invoices service', () => {
             representation: 'date',
           })
         )
+        expect(result.status).toBe('DRAFT')
       }
     )
 
     scenario(
       'creates an invoice with the status of PENDING if all fields are provided',
       async (scenario: StandardScenario) => {
-        const clientCity = faker.address.city()
-        const clientCountry = faker.address.country()
-        const clientStreet = faker.address.street()
-        const clientPostCode = faker.address.zipCode()
-        const clientName = faker.internet.userName()
-        const clientEmail = faker.internet.email()
-
-        const firstItemInput = {
+        const firstItemInput = createInvoiceItemInputFactory.build({
           productId: scenario.product.one.id,
-          price: faker.datatype.number(),
-          quantity: faker.datatype.number({ min: 1, max: 10 }),
-        }
-
-        const secondItemInput = {
+        })
+        const secondItemInput = createInvoiceItemInputFactory.build({
           productId: scenario.product.two.id,
-          price: faker.datatype.number(),
-          quantity: faker.datatype.number({ min: 1, max: 10 }),
-        }
-
-        const billFromCity = faker.address.city()
-        const billFromCountry = faker.address.country()
-        const billFromStreet = faker.address.street()
-        const billFromPostCode = faker.address.zipCode()
-
-        const description = faker.random.words(10)
-        const issueDate = faker.date.past()
+        })
 
         const result = await createInvoice({
-          input: {
-            billFromCity,
-            billFromCountry,
-            billFromPostCode,
-            billFromStreet,
-            clientCity,
-            clientCountry,
-            clientEmail,
-            clientName,
-            clientPostCode,
-            clientStreet,
-            description,
-            issueDate,
+          input: createInvoiceInputFactory.build({
             items: [firstItemInput, secondItemInput],
-            paymentTerms: faker.datatype.number({ min: 1, max: 30 }),
-          },
+          }),
         })
 
         expect(result.status).toBe('PENDING')
       }
     )
   })
-
-  // scenario('returns a single invoice', async (scenario: StandardScenario) => {
-  //   const result = await invoice({ id: scenario.invoice.one.id })
-
-  //   expect(result).toEqual(scenario.invoice.one)
-  // })
-
-  // scenario('creates a invoice', async (scenario: StandardScenario) => {
-  //   const result = await createInvoice({
-  //     input: {
-  //       paymentDue: '2023-01-22T12:59:24.357Z',
-  //       authorId: scenario.invoice.two.authorId,
-  //     },
-  //   })
-
-  //   expect(result.paymentDue).toEqual(new Date('2023-01-22T12:59:24.357Z'))
-  //   expect(result.updatedAt).toEqual(new Date('2023-01-22T12:59:24.357Z'))
-  //   expect(result.authorId).toEqual(scenario.invoice.two.authorId)
-  // })
-
-  // scenario('updates a invoice', async (scenario: StandardScenario) => {
-  //   const original = (await invoice({ id: scenario.invoice.one.id })) as Invoice
-  //   const result = await updateInvoice({
-  //     id: original.id,
-  //     input: { paymentDue: '2023-01-23T12:59:24.357Z' },
-  //   })
-
-  //   expect(result.paymentDue).toEqual(new Date('2023-01-23T12:59:24.357Z'))
-  // })
-
-  // scenario('deletes a invoice', async (scenario: StandardScenario) => {
-  //   const original = (await deleteInvoice({
-  //     id: scenario.invoice.one.id,
-  //   })) as Invoice
-  //   const result = await invoice({ id: original.id })
-
-  //   expect(result).toEqual(null)
-  // })
 })

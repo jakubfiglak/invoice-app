@@ -2,6 +2,8 @@ import { faker } from '@faker-js/faker'
 
 import type { CurrentUser } from '@redwoodjs/auth'
 
+import { createProductInputFactory } from 'src/test/factories'
+
 import {
   products,
   product,
@@ -71,18 +73,12 @@ describe('products service', () => {
 
   describe('create', () => {
     scenario('creates a product with relation to author', async () => {
-      const name = faker.random.word()
-      const price = faker.datatype.number()
+      const input = createProductInputFactory.build()
 
-      const result = await createProduct({
-        input: {
-          name,
-          price,
-        },
-      })
+      const result = await createProduct({ input })
 
-      expect(result.name).toBe(name)
-      expect(result.price).toBe(price)
+      expect(result.name).toBe(input.name)
+      expect(result.price).toBe(input.price)
       expect(result.authorId).toBe(currentUser.id)
     })
 
@@ -93,7 +89,7 @@ describe('products service', () => {
 
         try {
           result = await createProduct({
-            input: { name: '', price: faker.datatype.number() },
+            input: createProductInputFactory.build({ name: '' }),
           })
         } catch (error) {
           expect(error).toMatchInlineSnapshot(`
@@ -122,10 +118,9 @@ describe('products service', () => {
 
       try {
         result = await createProduct({
-          input: {
+          input: createProductInputFactory.build({
             name: faker.random.alphaNumeric(105),
-            price: faker.datatype.number(),
-          },
+          }),
         })
       } catch (error) {
         expect(error).toMatchInlineSnapshot(`
@@ -153,7 +148,9 @@ describe('products service', () => {
 
       try {
         result = await createProduct({
-          input: { name: faker.random.word(), price: -faker.datatype.number() },
+          input: createProductInputFactory.build({
+            price: -faker.datatype.number(),
+          }),
         })
       } catch (error) {
         expect(error).toMatchInlineSnapshot(`

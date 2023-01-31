@@ -2,6 +2,11 @@ import { faker } from '@faker-js/faker'
 import type { Prisma, Product } from '@prisma/client'
 import { User } from 'types/graphql'
 
+import {
+  productCreateArgsDataFactory,
+  userCreateArgsDataFactory,
+} from 'src/test/factories'
+
 export const testUserId = faker.datatype.uuid()
 const anotherUserId = faker.datatype.uuid()
 
@@ -18,52 +23,24 @@ export const standard = defineScenario<
 >({
   user: {
     testUser: {
-      data: {
-        id: testUserId,
-        email: faker.internet.email(),
-        name: faker.internet.userName(),
-        hashedPassword: faker.internet.password(),
-        salt: faker.internet.password(),
-      },
+      data: userCreateArgsDataFactory.build({ id: testUserId }),
     },
     anotherUser: {
-      data: {
-        id: anotherUserId,
-        email: faker.internet.email(),
-        name: faker.internet.userName(),
-        hashedPassword: faker.internet.password(),
-        salt: faker.internet.password(),
-      },
+      data: userCreateArgsDataFactory.build({ id: anotherUserId }),
     },
   },
   product: {
     firstCreatedByTestUser: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: testUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: testUserId }),
     },
     secondCreatedByTestUser: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: testUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: testUserId }),
     },
     firstCreatedByAnotherUser: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: anotherUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: anotherUserId }),
     },
     secondCreatedByAnotherUser: {
-      data: {
-        name: faker.random.word(),
-        price: faker.datatype.number(),
-        authorId: anotherUserId,
-      },
+      data: productCreateArgsDataFactory.build({ authorId: anotherUserId }),
     },
   },
 })

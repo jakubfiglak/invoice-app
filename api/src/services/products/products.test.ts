@@ -97,20 +97,20 @@ describe('products service', () => {
           })
         } catch (error) {
           expect(error).toMatchInlineSnapshot(`
-          [ZodError: [
-            {
-              "code": "too_small",
-              "minimum": 1,
-              "type": "string",
-              "inclusive": true,
-              "exact": false,
-              "message": "Name must be at least 1 character long",
-              "path": [
-                "name"
-              ]
-            }
-          ]]
-        `)
+            [ZodError: [
+              {
+                "code": "too_small",
+                "minimum": 1,
+                "type": "string",
+                "inclusive": true,
+                "exact": false,
+                "message": "String must contain at least 1 character(s)",
+                "path": [
+                  "name"
+                ]
+              }
+            ]]
+          `)
         }
 
         expect(result).toBeUndefined()
@@ -136,7 +136,7 @@ describe('products service', () => {
               "type": "string",
               "inclusive": true,
               "exact": false,
-              "message": "Name must be at most 100 characters long",
+              "message": "String must contain at most 100 character(s)",
               "path": [
                 "name"
               ]
@@ -162,9 +162,9 @@ describe('products service', () => {
               "code": "too_small",
               "minimum": 0,
               "type": "number",
-              "inclusive": true,
+              "inclusive": false,
               "exact": false,
-              "message": "Price cannot be negative",
+              "message": "Number must be greater than 0",
               "path": [
                 "price"
               ]
@@ -213,7 +213,7 @@ describe('products service', () => {
                 "type": "string",
                 "inclusive": true,
                 "exact": false,
-                "message": "Name must be at least 1 character long",
+                "message": "String must contain at least 1 character(s)",
                 "path": [
                   "name"
                 ]
@@ -247,7 +247,7 @@ describe('products service', () => {
                 "type": "string",
                 "inclusive": true,
                 "exact": false,
-                "message": "Name must be at most 100 characters long",
+                "message": "String must contain at most 100 character(s)",
                 "path": [
                   "name"
                 ]
@@ -277,9 +277,9 @@ describe('products service', () => {
                 "code": "too_small",
                 "minimum": 0,
                 "type": "number",
-                "inclusive": true,
+                "inclusive": false,
                 "exact": false,
-                "message": "Price cannot be negative",
+                "message": "Number must be greater than 0",
                 "path": [
                   "price"
                 ]

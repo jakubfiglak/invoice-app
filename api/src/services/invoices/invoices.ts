@@ -1,3 +1,4 @@
+import { addDays } from 'date-fns'
 import type {
   QueryResolvers,
   MutationResolvers,
@@ -5,22 +6,87 @@ import type {
 } from 'types/graphql'
 
 import { db } from 'src/lib/db'
+import { draftInvoiceInputSchema } from 'src/services/invoices/schemas'
 
-export const invoices: QueryResolvers['invoices'] = () => {
-  return db.invoice.findMany()
+export const invoices: QueryResolvers['invoices'] = ({ status }) => {
+  return db.invoice.findMany({
+    where: { authorId: context.currentUser?.id, status: status || undefined },
+  })
 }
 
 export const invoice: QueryResolvers['invoice'] = ({ id }) => {
-  return db.invoice.findUnique({
-    where: { id },
+  return db.invoice.findFirst({
+    where: { id, authorId: context.currentUser?.id },
   })
 }
 
 export const createInvoice: MutationResolvers['createInvoice'] = ({
   input,
 }) => {
+  const {
+    description,
+    issueDate,
+    paymentTerms,
+    billFromCity,
+    billFromCountry,
+    billFromPostCode,
+    billFromStreet,
+    clientName,
+    clientEmail,
+    clientCity,
+    clientCountry,
+    clientStreet,
+    clientPostCode,
+    status,
+    items,
+  } = draftInvoiceInputSchema.parse(input)
+
   return db.invoice.create({
-    data: input,
+    data: {
+      description,
+      issueDate,
+      paymentDue:
+        issueDate && paymentTerms
+          ? addDays(new Date(issueDate), paymentTerms)
+          : undefined,
+      paymentTerms,
+      status,
+      senderAddress: {
+        create: {
+          city: billFromCity,
+          country: billFromCountry,
+          street: billFromStreet,
+          postCode: billFromPostCode,
+        },
+      },
+      customer: {
+        create: {
+          name: clientName,
+          email: clientEmail,
+          address: {
+            create: {
+              city: clientCity,
+              country: clientCountry,
+              street: clientStreet,
+              postCode: clientPostCode,
+            },
+          },
+          author: { connect: { id: context.currentUser?.id } },
+        },
+      },
+      items: items
+        ? {
+            createMany: {
+              data: items.map(({ productId, price, quantity }) => ({
+                productId,
+                price,
+                quantity,
+              })),
+            },
+          }
+        : undefined,
+      author: { connect: { id: context.currentUser?.id } },
+    },
   })
 }
 

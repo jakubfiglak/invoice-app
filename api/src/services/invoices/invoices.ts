@@ -14,6 +14,11 @@ import {
   createAddress,
   updateAddress,
 } from 'src/services/addresses/addresses'
+import {
+  createCustomer,
+  CustomerInput,
+  updateCustomer,
+} from 'src/services/customers/customers'
 
 import { draftInvoiceInputSchema, pendingInvoiceInputSchema } from './schemas'
 
@@ -112,28 +117,70 @@ export const createInvoice: MutationResolvers['createInvoice'] = ({
 }
 
 type UpdateOrCreateInvoiceSenderAddressArgs = {
-  existingSenderAddressId?: string | null
+  existingAddressId?: string | null
   input: AddressInput
 }
 
-async function updateOrCreateInvoiceSenderAddress({
-  existingSenderAddressId,
+async function updateOrCreateAddress({
+  existingAddressId,
   input,
 }: UpdateOrCreateInvoiceSenderAddressArgs) {
-  let invoiceSenderAddressId = existingSenderAddressId
+  let addressId = existingAddressId
 
-  if (invoiceSenderAddressId) {
+  if (addressId) {
     await updateAddress({
-      id: invoiceSenderAddressId,
+      id: addressId,
       input,
     })
   } else {
-    const senderAddress = await createAddress(input)
+    const address = await createAddress(input)
 
-    invoiceSenderAddressId = senderAddress.id
+    addressId = address.id
   }
 
-  return invoiceSenderAddressId
+  return addressId
+}
+
+type UpdateOrCreateInvoiceCustomerArgs = {
+  existingCustomerId?: string | null
+  customerInput: CustomerInput
+  addressInput: AddressInput
+}
+
+async function updateOrCreateCustomer({
+  existingCustomerId,
+  customerInput,
+  addressInput,
+}: UpdateOrCreateInvoiceCustomerArgs) {
+  // Handle customer update
+  let customerId = existingCustomerId
+
+  if (customerId) {
+    const updatedCustomer = await updateCustomer({
+      id: customerId,
+      input: customerInput,
+    })
+
+    const customerAddressId = await updateOrCreateAddress({
+      existingAddressId: updatedCustomer.addressId,
+      input: addressInput,
+    })
+
+    await updateCustomer({
+      id: customerId,
+      input: { addressId: customerAddressId },
+    })
+  } else {
+    const address = await createAddress(addressInput)
+    const customer = await createCustomer({
+      ...customerInput,
+      addressId: address.id,
+    })
+
+    customerId = customer.id
+  }
+
+  return customerId
 }
 
 export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
@@ -173,8 +220,8 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
     paymentTerms,
   } = pendingInvoiceInputSchema.parse(input)
 
-  const invoiceSenderAddressId = await updateOrCreateInvoiceSenderAddress({
-    existingSenderAddressId: invoice.senderAddressId,
+  const invoiceSenderAddressId = await updateOrCreateAddress({
+    existingAddressId: invoice.senderAddressId,
     input: {
       city: billFromCity,
       country: billFromCountry,
@@ -183,65 +230,16 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
     },
   })
 
-  // Handle customer update
-  let customerId = invoice.customerId
-
-  if (customerId) {
-    const updatedCustomer = await db.customer.update({
-      where: { id: customerId },
-      data: {
-        name: clientName,
-        email: clientEmail,
-      },
-    })
-
-    let customerAddressId = updatedCustomer.addressId
-
-    if (customerAddressId) {
-      await db.address.update({
-        where: { id: customerAddressId },
-        data: {
-          city: clientCity,
-          country: clientCountry,
-          postCode: clientPostCode,
-          street: clientStreet,
-        },
-      })
-    } else {
-      const newCustomerAddress = await db.address.create({
-        data: {
-          city: clientCity,
-          country: clientCountry,
-          postCode: clientPostCode,
-          street: clientStreet,
-        },
-      })
-
-      customerAddressId = newCustomerAddress.id
-    }
-    await db.customer.update({
-      where: { id: customerId },
-      data: { addressId: customerAddressId },
-    })
-  } else {
-    const customer = await db.customer.create({
-      data: {
-        name: clientName,
-        email: clientEmail,
-        address: {
-          create: {
-            city: clientCity,
-            country: clientCountry,
-            postCode: clientPostCode,
-            street: clientStreet,
-          },
-        },
-        author: { connect: { id: invoice.authorId } },
-      },
-    })
-
-    customerId = customer.id
-  }
+  const customerId = await updateOrCreateCustomer({
+    existingCustomerId: invoice.customerId,
+    customerInput: { name: clientName, email: clientEmail },
+    addressInput: {
+      city: clientCity,
+      country: clientCountry,
+      postCode: clientPostCode,
+      street: clientStreet,
+    },
+  })
 
   // Handle items update
   // First - we need to delete all already exisitng invoice items

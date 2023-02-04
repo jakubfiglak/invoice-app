@@ -203,41 +203,30 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
     )
   }
 
-  const {
-    billFromCity,
-    billFromCountry,
-    billFromPostCode,
-    billFromStreet,
-    clientCity,
-    clientCountry,
-    clientEmail,
-    clientName,
-    clientPostCode,
-    clientStreet,
-    description,
-    issueDate,
-    items,
-    paymentTerms,
-  } = pendingInvoiceInputSchema.parse(input)
+  const { description, issueDate, items, paymentTerms, ...parsedInput } =
+    pendingInvoiceInputSchema.parse(input)
 
-  const invoiceSenderAddressId = await updateOrCreateAddress({
+  const senderAddressId = await updateOrCreateAddress({
     existingAddressId: invoice.senderAddressId,
     input: {
-      city: billFromCity,
-      country: billFromCountry,
-      postCode: billFromPostCode,
-      street: billFromStreet,
+      city: parsedInput.billFromCity,
+      country: parsedInput.billFromCountry,
+      postCode: parsedInput.billFromPostCode,
+      street: parsedInput.billFromStreet,
     },
   })
 
   const customerId = await updateOrCreateCustomer({
     existingCustomerId: invoice.customerId,
-    customerInput: { name: clientName, email: clientEmail },
+    customerInput: {
+      name: parsedInput.clientName,
+      email: parsedInput.clientEmail,
+    },
     addressInput: {
-      city: clientCity,
-      country: clientCountry,
-      postCode: clientPostCode,
-      street: clientStreet,
+      city: parsedInput.clientCity,
+      country: parsedInput.clientCountry,
+      postCode: parsedInput.clientPostCode,
+      street: parsedInput.clientStreet,
     },
   })
 
@@ -258,7 +247,7 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
   return db.invoice.update({
     data: {
       status: 'PENDING',
-      senderAddressId: invoiceSenderAddressId,
+      senderAddressId,
       customerId,
       issueDate,
       description,

@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker'
+import { createId } from '@paralleldrive/cuid2'
 import type { Prisma, Product } from '@prisma/client'
 import { User } from 'types/graphql'
 
@@ -7,8 +7,8 @@ import {
   userCreateArgsDataFactory,
 } from 'src/test/factories'
 
-export const testUserId = faker.datatype.uuid()
-const anotherUserId = faker.datatype.uuid()
+export const testUserId = createId()
+const anotherUserId = createId()
 
 type UserName = 'testUser' | 'anotherUser'
 type ProductName =

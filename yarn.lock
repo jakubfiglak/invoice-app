@@ -3727,6 +3727,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/hashes@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "@noble/hashes@npm:1.1.5"
+  checksum: cf7f3baff1d95968309d260441d823a854dd76ca0b02f970db0c2f2e0de980c3cc55afcc6a8f3808bb505e65c59cd5332c5f32f821cf35b7982dc7570e991731
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -3862,6 +3869,15 @@ __metadata:
   version: 1.0.0
   resolution: "@panva/asn1.js@npm:1.0.0"
   checksum: 5d6e7ec460b65b017043e2702e25f323936baad2aa248dbd9bf54c9508e351d236bffac96fa033c6e36cb0482a9dd73c3605948a36a59bd6bec49353ba8d7b62
+  languageName: node
+  linkType: hard
+
+"@paralleldrive/cuid2@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@paralleldrive/cuid2@npm:2.0.1"
+  dependencies:
+    "@noble/hashes": ^1.1.5
+  checksum: 6c75645260e455d757af322df900e160981213c8e8966c6a57b34ccdb6f8b4cbd8d7895d6e9415338246907ec1720d2d47899ea5f483bdab12125b0f1e58bb59
   languageName: node
   linkType: hard
 
@@ -7797,6 +7813,7 @@ __metadata:
   resolution: "api@workspace:api"
   dependencies:
     "@faker-js/faker": ^7.6.0
+    "@paralleldrive/cuid2": ^2.0.1
     "@redwoodjs/api": 3.8.0
     "@redwoodjs/graphql-server": 3.8.0
     date-fns: ^2.29.3

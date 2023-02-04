@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { createId } from '@paralleldrive/cuid2'
 import type { Prisma, Invoice, Product, User } from '@prisma/client'
 
 import {
@@ -7,8 +8,10 @@ import {
   userCreateArgsDataFactory,
 } from 'src/test/factories'
 
-export const testUserId = faker.datatype.uuid()
-const anotherUserId = faker.datatype.uuid()
+export const testUserId = createId()
+const anotherUserId = createId()
+const firstProductId = createId()
+const secondProductId = createId()
 
 type UserName = 'testUser' | 'anotherUser'
 type ProductName = 'one' | 'two' | 'three' | 'four'
@@ -19,6 +22,7 @@ type InvoiceName =
   | 'draftCreatedByAnotherUser'
   | 'pendingCreatedByAnotherUser'
   | 'paidCreatedByAnotherUser'
+  | 'fullCreatedByTestUser'
 
 export const standard = defineScenario<
   Prisma.ProductCreateArgs | Prisma.UserCreateArgs | Prisma.InvoiceCreateArgs,
@@ -34,10 +38,16 @@ export const standard = defineScenario<
   },
   product: {
     one: {
-      data: productCreateArgsDataFactory.build({ authorId: testUserId }),
+      data: productCreateArgsDataFactory.build({
+        id: firstProductId,
+        authorId: testUserId,
+      }),
     },
     two: {
-      data: productCreateArgsDataFactory.build({ authorId: testUserId }),
+      data: productCreateArgsDataFactory.build({
+        id: secondProductId,
+        authorId: testUserId,
+      }),
     },
     three: {
       data: productCreateArgsDataFactory.build({ authorId: anotherUserId }),
@@ -82,6 +92,55 @@ export const standard = defineScenario<
         status: 'PAID',
         authorId: anotherUserId,
       }),
+    },
+    fullCreatedByTestUser: {
+      data: {
+        description: faker.random.words(3),
+        issueDate: faker.date.past().toISOString(),
+        paymentDue: faker.date.future().toISOString(),
+        paymentTerms: 7,
+        status: 'DRAFT',
+        author: { connect: { id: testUserId } },
+        senderAddress: {
+          create: {
+            city: faker.address.city(),
+            country: faker.address.country(),
+            street: faker.address.street(),
+            postCode: faker.address.zipCode(),
+          },
+        },
+        customer: {
+          create: {
+            name: faker.internet.userName(),
+            email: faker.internet.email(),
+            author: { connect: { id: testUserId } },
+            address: {
+              create: {
+                city: faker.address.city(),
+                country: faker.address.country(),
+                street: faker.address.street(),
+                postCode: faker.address.zipCode(),
+              },
+            },
+          },
+        },
+        items: {
+          createMany: {
+            data: [
+              {
+                productId: firstProductId,
+                price: faker.datatype.number(),
+                quantity: faker.datatype.number({ min: 1, max: 10 }),
+              },
+              {
+                productId: secondProductId,
+                price: faker.datatype.number(),
+                quantity: faker.datatype.number({ min: 1, max: 10 }),
+              },
+            ],
+          },
+        },
+      },
     },
   },
 })

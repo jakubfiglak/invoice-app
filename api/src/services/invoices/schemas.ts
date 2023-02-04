@@ -17,7 +17,7 @@ export const draftInvoiceInputSchema = z.object({
   items: z
     .array(
       z.object({
-        productId: z.string().cuid(),
+        productId: z.string(),
         quantity: z.number().int().positive(),
         price: z.number().int().positive(),
       })

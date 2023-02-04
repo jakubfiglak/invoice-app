@@ -8,7 +8,7 @@ import type { CurrentUser } from '@redwoodjs/auth'
 import { db } from 'src/lib/db'
 import {
   createInvoiceItemInputFactory,
-  createCustomerInputFactory,
+  createInvoiceCustomerInputFactory,
   createSenderAddressInputFactory,
   invoiceInputFactory,
 } from 'src/test/factories'
@@ -219,7 +219,7 @@ describe('invoices service', () => {
         clientName,
         clientPostCode,
         clientStreet,
-      } = createCustomerInputFactory.build()
+      } = createInvoiceCustomerInputFactory.build()
 
       const result = await createInvoice({
         input: {

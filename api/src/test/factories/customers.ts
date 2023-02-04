@@ -1,24 +1,11 @@
 import { faker } from '@faker-js/faker'
+import { createId } from '@paralleldrive/cuid2'
 import { Factory } from 'fishery'
-import type { CreateInvoiceInput } from 'types/graphql'
 
-type CreateCustomerInput = Pick<
-  CreateInvoiceInput,
-  | 'clientCity'
-  | 'clientCountry'
-  | 'clientStreet'
-  | 'clientPostCode'
-  | 'clientName'
-  | 'clientEmail'
->
+import type { CustomerInput } from 'src/services/customers/customers'
 
-export const createCustomerInputFactory = Factory.define<CreateCustomerInput>(
-  () => ({
-    clientCity: faker.address.city(),
-    clientCountry: faker.address.country(),
-    clientStreet: faker.address.street(),
-    clientPostCode: faker.address.zipCode(),
-    clientName: faker.internet.userName(),
-    clientEmail: faker.internet.email(),
-  })
-)
+export const customerInputFactory = Factory.define<CustomerInput>(() => ({
+  name: faker.internet.userName(),
+  email: faker.internet.email(),
+  addressId: createId(),
+}))

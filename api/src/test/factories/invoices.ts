@@ -4,8 +4,6 @@ import type { Prisma } from '@prisma/client'
 import { Factory } from 'fishery'
 import type { CreateInvoiceInput } from 'types/graphql'
 
-import { createCustomerInputFactory } from './customers'
-
 type CreateSenderAddressInput = Pick<
   CreateInvoiceInput,
   'billFromCity' | 'billFromCountry' | 'billFromStreet' | 'billFromPostCode'
@@ -19,9 +17,29 @@ export const createSenderAddressInputFactory =
     billFromPostCode: faker.address.zipCode(),
   }))
 
+type CreateInvoiceCustomerInput = Pick<
+  CreateInvoiceInput,
+  | 'clientCity'
+  | 'clientCountry'
+  | 'clientStreet'
+  | 'clientPostCode'
+  | 'clientName'
+  | 'clientEmail'
+>
+
+export const createInvoiceCustomerInputFactory =
+  Factory.define<CreateInvoiceCustomerInput>(() => ({
+    clientCity: faker.address.city(),
+    clientCountry: faker.address.country(),
+    clientStreet: faker.address.street(),
+    clientPostCode: faker.address.zipCode(),
+    clientName: faker.internet.userName(),
+    clientEmail: faker.internet.email(),
+  }))
+
 export const invoiceInputFactory = Factory.define<CreateInvoiceInput>(() => ({
   ...createSenderAddressInputFactory.build(),
-  ...createCustomerInputFactory.build(),
+  ...createInvoiceCustomerInputFactory.build(),
   description: faker.random.words(10),
   issueDate: faker.date.past(),
   paymentTerms: faker.datatype.number({ min: 1, max: 30 }),

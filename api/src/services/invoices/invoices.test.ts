@@ -9,7 +9,7 @@ import { db } from 'src/lib/db'
 import {
   createInvoiceItemInputFactory,
   createCustomerInputFactory,
-  createAddressInputFactory,
+  createSenderAddressInputFactory,
   invoiceInputFactory,
 } from 'src/test/factories'
 
@@ -187,7 +187,7 @@ describe('invoices service', () => {
         billFromCountry,
         billFromPostCode,
         billFromStreet,
-      } = createAddressInputFactory.build()
+      } = createSenderAddressInputFactory.build()
 
       const result = await createInvoice({
         input: {

@@ -1,17 +1,11 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
-import type { CreateInvoiceInput } from 'types/graphql'
 
-type CreateAddressInput = Pick<
-  CreateInvoiceInput,
-  'billFromCity' | 'billFromCountry' | 'billFromStreet' | 'billFromPostCode'
->
+import type { AddressInput } from 'src/services/addresses/addresses'
 
-export const createAddressInputFactory = Factory.define<CreateAddressInput>(
-  () => ({
-    billFromCity: faker.address.city(),
-    billFromCountry: faker.address.country(),
-    billFromStreet: faker.address.street(),
-    billFromPostCode: faker.address.zipCode(),
-  })
-)
+export const addressInputFactory = Factory.define<AddressInput>(() => ({
+  city: faker.address.city(),
+  country: faker.address.country(),
+  street: faker.address.street(),
+  postCode: faker.address.zipCode(),
+}))

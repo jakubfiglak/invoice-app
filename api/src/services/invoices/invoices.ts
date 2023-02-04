@@ -9,6 +9,11 @@ import { ForbiddenError, RedwoodGraphQLError } from '@redwoodjs/graphql-server'
 
 import { hasRole } from 'src/lib/auth'
 import { db } from 'src/lib/db'
+import {
+  AddressInput,
+  createAddress,
+  updateAddress,
+} from 'src/services/addresses/addresses'
 
 import { draftInvoiceInputSchema, pendingInvoiceInputSchema } from './schemas'
 
@@ -106,6 +111,31 @@ export const createInvoice: MutationResolvers['createInvoice'] = ({
   })
 }
 
+type UpdateOrCreateInvoiceSenderAddressArgs = {
+  existingSenderAddressId?: string | null
+  input: AddressInput
+}
+
+async function updateOrCreateInvoiceSenderAddress({
+  existingSenderAddressId,
+  input,
+}: UpdateOrCreateInvoiceSenderAddressArgs) {
+  let invoiceSenderAddressId = existingSenderAddressId
+
+  if (invoiceSenderAddressId) {
+    await updateAddress({
+      id: invoiceSenderAddressId,
+      input,
+    })
+  } else {
+    const senderAddress = await createAddress(input)
+
+    invoiceSenderAddressId = senderAddress.id
+  }
+
+  return invoiceSenderAddressId
+}
+
 export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
   id,
   input,
@@ -143,31 +173,15 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
     paymentTerms,
   } = pendingInvoiceInputSchema.parse(input)
 
-  // Handle address update
-  let invoiceSenderAddressId = invoice.senderAddressId
-
-  if (invoiceSenderAddressId) {
-    await db.address.update({
-      where: { id: invoiceSenderAddressId },
-      data: {
-        city: billFromCity,
-        country: billFromCountry,
-        postCode: billFromPostCode,
-        street: billFromStreet,
-      },
-    })
-  } else {
-    const senderAddress = await db.address.create({
-      data: {
-        city: billFromCity,
-        country: billFromCountry,
-        postCode: billFromPostCode,
-        street: billFromStreet,
-      },
-    })
-
-    invoiceSenderAddressId = senderAddress.id
-  }
+  const invoiceSenderAddressId = await updateOrCreateInvoiceSenderAddress({
+    existingSenderAddressId: invoice.senderAddressId,
+    input: {
+      city: billFromCity,
+      country: billFromCountry,
+      postCode: billFromPostCode,
+      street: billFromStreet,
+    },
+  })
 
   // Handle customer update
   let customerId = invoice.customerId

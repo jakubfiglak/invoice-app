@@ -3,6 +3,7 @@ import type {
   QueryResolvers,
   MutationResolvers,
   InvoiceRelationResolvers,
+  CreateInvoiceItemInput,
 } from 'types/graphql'
 
 import { ForbiddenError, RedwoodGraphQLError } from '@redwoodjs/graphql-server'
@@ -19,6 +20,10 @@ import {
   CustomerInput,
   updateCustomer,
 } from 'src/services/customers/customers'
+import {
+  createInvoiceItems,
+  deleteInvoiceItems,
+} from 'src/services/invoiceItems/invoiceItems'
 
 import { draftInvoiceInputSchema, pendingInvoiceInputSchema } from './schemas'
 
@@ -183,6 +188,22 @@ async function updateOrCreateCustomer({
   return customerId
 }
 
+type UpdateInvoiceItemsArgs = {
+  invoiceId: string
+  itemsInput: CreateInvoiceItemInput[]
+}
+
+async function updateInvoiceItems({
+  invoiceId,
+  itemsInput,
+}: UpdateInvoiceItemsArgs) {
+  // First - we need to delete all already exisitng invoice items
+  await deleteInvoiceItems(invoiceId)
+
+  // Then we need to create new items based on the input
+  await createInvoiceItems(itemsInput.map((item) => ({ invoiceId, ...item })))
+}
+
 export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
   id,
   input,
@@ -230,19 +251,7 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
     },
   })
 
-  // Handle items update
-  // First - we need to delete all already exisitng invoice items
-  await db.invoiceItem.deleteMany({ where: { invoiceId: invoice.id } })
-
-  // Then we need to create new items based on the input
-  await db.invoiceItem.createMany({
-    data: items.map(({ productId, price, quantity }) => ({
-      invoiceId: invoice.id,
-      productId,
-      price,
-      quantity,
-    })),
-  })
+  await updateInvoiceItems({ invoiceId: invoice.id, itemsInput: items })
 
   return db.invoice.update({
     data: {

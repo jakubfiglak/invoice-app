@@ -365,7 +365,7 @@ describe('invoices service', () => {
           })
         } catch (error) {
           expect(error).toMatchInlineSnapshot(
-            `[GraphQLError: You cannot update an invoice with the status of PAID]`
+            `[GraphQLError: This operation is not allowed on an invoice with the status of PAID]`
           )
         }
 
@@ -783,7 +783,7 @@ describe('invoices service', () => {
           })
         } catch (error) {
           expect(error).toMatchInlineSnapshot(
-            `[GraphQLError: You cannot delete an invoice with the status of PENDING]`
+            `[GraphQLError: This operation is not allowed on an invoice with the status of PENDING]`
           )
         }
 
@@ -802,7 +802,7 @@ describe('invoices service', () => {
           })
         } catch (error) {
           expect(error).toMatchInlineSnapshot(
-            `[GraphQLError: You cannot delete an invoice with the status of PAID]`
+            `[GraphQLError: This operation is not allowed on an invoice with the status of PAID]`
           )
         }
 

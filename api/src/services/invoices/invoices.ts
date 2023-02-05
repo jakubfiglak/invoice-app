@@ -4,6 +4,7 @@ import type {
   MutationResolvers,
   InvoiceRelationResolvers,
   CreateInvoiceItemInput,
+  InvoiceStatus,
 } from 'types/graphql'
 
 import { ForbiddenError, RedwoodGraphQLError } from '@redwoodjs/graphql-server'
@@ -27,15 +28,19 @@ import {
 
 import { draftInvoiceInputSchema, pendingInvoiceInputSchema } from './schemas'
 
+function setAuthorFilters() {
+  return hasRole('ADMIN') ? {} : { authorId: context.currentUser?.id }
+}
+
 export const invoices: QueryResolvers['invoices'] = ({ status }) => {
   return db.invoice.findMany({
-    where: { authorId: context.currentUser?.id, status: status || undefined },
+    where: { status: status || undefined, ...setAuthorFilters() },
   })
 }
 
 export const invoice: QueryResolvers['invoice'] = ({ id }) => {
   return db.invoice.findFirst({
-    where: { id, authorId: context.currentUser?.id },
+    where: { id, ...setAuthorFilters() },
   })
 }
 
@@ -216,6 +221,28 @@ async function updateInvoiceItems({
   await createInvoiceItems(itemsInput.map((item) => ({ invoiceId, ...item })))
 }
 
+function checkPermissions(authorId: string) {
+  if (authorId !== context.currentUser?.id && !hasRole('ADMIN')) {
+    throw new ForbiddenError("You don't have permission to do that")
+  }
+}
+
+type CheckAllowedStatusesArgs = {
+  status: InvoiceStatus
+  allowedStatuses: InvoiceStatus[]
+}
+
+function checkAllowedStatuses({
+  status,
+  allowedStatuses,
+}: CheckAllowedStatusesArgs) {
+  if (!allowedStatuses.includes(status)) {
+    throw new ForbiddenError(
+      `This operation is not allowed on an invoice with the status of ${status}`
+    )
+  }
+}
+
 export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
   id,
   input,
@@ -226,15 +253,12 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
     throw new RedwoodGraphQLError('Invoice to update not found')
   }
 
-  if (invoice?.authorId !== context.currentUser?.id && !hasRole('ADMIN')) {
-    throw new ForbiddenError("You don't have permission to do that")
-  }
+  checkPermissions(invoice.authorId)
 
-  if (invoice?.status === 'PAID') {
-    throw new ForbiddenError(
-      'You cannot update an invoice with the status of PAID'
-    )
-  }
+  checkAllowedStatuses({
+    status: invoice.status,
+    allowedStatuses: ['DRAFT', 'PENDING'],
+  })
 
   const { description, issueDate, items, paymentTerms, ...parsedInput } =
     pendingInvoiceInputSchema.parse(input)
@@ -288,15 +312,12 @@ export const deleteInvoice: MutationResolvers['deleteInvoice'] = async ({
     throw new RedwoodGraphQLError('Invoice to delete not found')
   }
 
-  if (invoice.authorId !== context.currentUser?.id && !hasRole('ADMIN')) {
-    throw new ForbiddenError("You don't have permission to do that")
-  }
+  checkPermissions(invoice.authorId)
 
-  if (invoice.status !== 'DRAFT') {
-    throw new ForbiddenError(
-      `You cannot delete an invoice with the status of ${invoice.status}`
-    )
-  }
+  checkAllowedStatuses({
+    status: invoice.status,
+    allowedStatuses: ['DRAFT'],
+  })
 
   return db.invoice.delete({
     where: { id },

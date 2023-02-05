@@ -39,6 +39,18 @@ export const invoice: QueryResolvers['invoice'] = ({ id }) => {
   })
 }
 
+type CalculatePaymentDueDateArgs = {
+  issueDate: string | Date
+  paymentTerms: number
+}
+
+function calculatePaymentDueDate({
+  issueDate,
+  paymentTerms,
+}: CalculatePaymentDueDateArgs) {
+  return addDays(new Date(issueDate), paymentTerms)
+}
+
 export const createInvoice: MutationResolvers['createInvoice'] = ({
   input,
 }) => {
@@ -76,7 +88,7 @@ export const createInvoice: MutationResolvers['createInvoice'] = ({
       issueDate,
       paymentDue:
         issueDate && paymentTerms
-          ? addDays(new Date(issueDate), paymentTerms)
+          ? calculatePaymentDueDate({ issueDate, paymentTerms })
           : undefined,
       paymentTerms,
       senderAddress: {
@@ -261,7 +273,7 @@ export const updateInvoice: MutationResolvers['updateInvoice'] = async ({
       issueDate,
       description,
       paymentTerms,
-      paymentDue: addDays(new Date(issueDate), paymentTerms),
+      paymentDue: calculatePaymentDueDate({ issueDate, paymentTerms }),
     },
     where: { id },
   })

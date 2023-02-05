@@ -27,7 +27,7 @@ export const schema = gql`
     invoice(id: String!): Invoice @requireAuth
   }
 
-  type CreateInvoiceItemInput {
+  input CreateInvoiceItemInput {
     productId: String!
     quantity: Int!
     price: Int!

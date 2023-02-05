@@ -331,7 +331,11 @@ export const Invoice: InvoiceRelationResolvers = {
   senderAddress: (_obj, { root }) => {
     return db.invoice.findUnique({ where: { id: root?.id } }).senderAddress()
   },
-  items: (_obj, { root }) => {
-    return db.invoice.findUnique({ where: { id: root?.id } }).items()
+  items: async (_obj, { root }) => {
+    const items = await db.invoice
+      .findUnique({ where: { id: root?.id } })
+      .items()
+
+    return items || []
   },
 }

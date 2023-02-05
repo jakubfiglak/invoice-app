@@ -15,4 +15,8 @@
   html {
     font-family: League Spartan, system-ui, sans-serif;
   }
+
+  body {
+    @apply text-black-russian
+  }
 }

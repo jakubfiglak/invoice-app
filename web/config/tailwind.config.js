@@ -15,6 +15,7 @@ module.exports = {
       'pastel-red': '#FF9797',
       'white-smoke': '#F8F8FB',
       eclipse: '#141625',
+      white: '#FFFFFF',
     },
     fontSize: {
       xs: [

@@ -9730,6 +9730,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"class-variance-authority@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "class-variance-authority@npm:0.4.0"
+  peerDependencies:
+    typescript: ">= 4.5.5 < 5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: c723ac977ac2dbde0b30f58b5fcfe0b926e986d2fa8305e49606c3a4efe0933dba930103675c631a2dbf6d5bb2fbbcb8f6f7a4406a3177bfa9e1b4ee173bd6c8
+  languageName: node
+  linkType: hard
+
 "clean-css@npm:^4.2.3":
   version: 4.2.4
   resolution: "clean-css@npm:4.2.4"
@@ -22805,6 +22817,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tailwind-merge@npm:^1.9.1":
+  version: 1.9.1
+  resolution: "tailwind-merge@npm:1.9.1"
+  checksum: 7ec3673b4a83b8f1404c13c80dd3022b21c2bfa214886b66f8e21ed61ff37740a839092eb17accfc6486c45a826da7cac0e5754e5171214d8be234e8cf81b979
+  languageName: node
+  linkType: hard
+
 "tailwindcss@npm:^3.2.4":
   version: 3.2.4
   resolution: "tailwindcss@npm:3.2.4"
@@ -24419,11 +24438,13 @@ __metadata:
     "@redwoodjs/router": 3.8.0
     "@redwoodjs/web": 3.8.0
     autoprefixer: ^10.4.13
+    class-variance-authority: ^0.4.0
     postcss: ^8.4.21
     postcss-loader: ^7.0.2
     prop-types: 15.8.1
     react: 17.0.2
     react-dom: 17.0.2
+    tailwind-merge: ^1.9.1
     tailwindcss: ^3.2.4
   languageName: unknown
   linkType: soft

@@ -22366,6 +22366,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"storybook-tailwind-dark-mode@npm:^1.0.15":
+  version: 1.0.15
+  resolution: "storybook-tailwind-dark-mode@npm:1.0.15"
+  peerDependencies:
+    "@storybook/addons": ^6.2.9
+    "@storybook/api": ^6.2.9
+    "@storybook/components": ^6.2.9
+    "@storybook/core-events": ^6.2.9
+    "@storybook/theming": ^6.2.9
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: f95497dfad39bf52d147a3380a0b059c6f85204240eb39c4b42d2b45974b0aa5005702525f15736a8ef57691c794a910a7cb29277169b6eb75144c5f9b4342da
+  languageName: node
+  linkType: hard
+
 "stream-browserify@npm:^2.0.1":
   version: 2.0.2
   resolution: "stream-browserify@npm:2.0.2"
@@ -24444,6 +24464,7 @@ __metadata:
     prop-types: 15.8.1
     react: 17.0.2
     react-dom: 17.0.2
+    storybook-tailwind-dark-mode: ^1.0.15
     tailwind-merge: ^1.9.1
     tailwindcss: ^3.2.4
   languageName: unknown

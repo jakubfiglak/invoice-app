@@ -16,6 +16,8 @@ module.exports = {
       'white-smoke': '#F8F8FB',
       eclipse: '#141625',
       white: '#FFFFFF',
+      whisper: '#F9FAFE',
+      martian: '#373B53',
     },
     fontSize: {
       xs: [
@@ -61,4 +63,5 @@ module.exports = {
     },
   },
   plugins: [],
+  darkMode: 'class',
 }

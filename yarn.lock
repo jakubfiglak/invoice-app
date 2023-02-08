@@ -24453,6 +24453,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web@workspace:web"
   dependencies:
+    "@faker-js/faker": ^7.6.0
     "@redwoodjs/auth": 3.8.0
     "@redwoodjs/forms": 3.8.0
     "@redwoodjs/router": 3.8.0

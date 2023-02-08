@@ -1,14 +1,39 @@
-import { render } from '@redwoodjs/testing/web'
+import { faker } from '@faker-js/faker'
+import userEvent from '@testing-library/user-event'
+
+import { render, screen, within } from '@redwoodjs/testing/web'
 
 import Button from './Button'
 
-//   Improve this test with help from the Redwood Testing Doc:
-//    https://redwoodjs.com/docs/testing#testing-components
-
 describe('Button', () => {
-  it('renders successfully', () => {
-    expect(() => {
-      render(<Button />)
-    }).not.toThrow()
+  it('renders children properly', () => {
+    const text = faker.lorem.word()
+
+    render(<Button>{text}</Button>)
+
+    expect(screen.getByRole('button', { name: text })).toBeInTheDocument()
+  })
+
+  it('triggers the onClick callback', async () => {
+    const text = faker.lorem.word()
+    const onClick = jest.fn()
+
+    render(<Button onClick={onClick}>{text}</Button>)
+
+    const button = screen.getByRole('button', { name: text })
+
+    await userEvent.click(button)
+
+    expect(onClick).toHaveBeenCalled()
+  })
+
+  it('renders the icon and children if variant prop is set to "primary-with-icon"', () => {
+    const text = faker.lorem.word()
+
+    render(<Button variant="primary-with-icon">{text}</Button>)
+
+    const button = screen.getByRole('button', { name: text })
+
+    expect(within(button).getByTestId('icon')).toBeInTheDocument()
   })
 })

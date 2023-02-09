@@ -9730,6 +9730,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"class-variance-authority@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "class-variance-authority@npm:0.4.0"
+  peerDependencies:
+    typescript: ">= 4.5.5 < 5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: c723ac977ac2dbde0b30f58b5fcfe0b926e986d2fa8305e49606c3a4efe0933dba930103675c631a2dbf6d5bb2fbbcb8f6f7a4406a3177bfa9e1b4ee173bd6c8
+  languageName: node
+  linkType: hard
+
 "clean-css@npm:^4.2.3":
   version: 4.2.4
   resolution: "clean-css@npm:4.2.4"
@@ -22354,6 +22366,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"storybook-tailwind-dark-mode@npm:^1.0.15":
+  version: 1.0.15
+  resolution: "storybook-tailwind-dark-mode@npm:1.0.15"
+  peerDependencies:
+    "@storybook/addons": ^6.2.9
+    "@storybook/api": ^6.2.9
+    "@storybook/components": ^6.2.9
+    "@storybook/core-events": ^6.2.9
+    "@storybook/theming": ^6.2.9
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: f95497dfad39bf52d147a3380a0b059c6f85204240eb39c4b42d2b45974b0aa5005702525f15736a8ef57691c794a910a7cb29277169b6eb75144c5f9b4342da
+  languageName: node
+  linkType: hard
+
 "stream-browserify@npm:^2.0.1":
   version: 2.0.2
   resolution: "stream-browserify@npm:2.0.2"
@@ -22802,6 +22834,13 @@ __metadata:
     systeminformation: lib/cli.js
   checksum: 2ed3ceec9d965b4c9421a5b981ae82122c8dd23ca0f5751d263c4c510d65af6710958a266c6da35d5c14079655b26ad4e6cb568d00e6659592a7a9492ffb0d9e
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^1.9.1":
+  version: 1.9.1
+  resolution: "tailwind-merge@npm:1.9.1"
+  checksum: 7ec3673b4a83b8f1404c13c80dd3022b21c2bfa214886b66f8e21ed61ff37740a839092eb17accfc6486c45a826da7cac0e5754e5171214d8be234e8cf81b979
   languageName: node
   linkType: hard
 
@@ -24414,16 +24453,20 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web@workspace:web"
   dependencies:
+    "@faker-js/faker": ^7.6.0
     "@redwoodjs/auth": 3.8.0
     "@redwoodjs/forms": 3.8.0
     "@redwoodjs/router": 3.8.0
     "@redwoodjs/web": 3.8.0
     autoprefixer: ^10.4.13
+    class-variance-authority: ^0.4.0
     postcss: ^8.4.21
     postcss-loader: ^7.0.2
     prop-types: 15.8.1
     react: 17.0.2
     react-dom: 17.0.2
+    storybook-tailwind-dark-mode: ^1.0.15
+    tailwind-merge: ^1.9.1
     tailwindcss: ^3.2.4
   languageName: unknown
   linkType: soft

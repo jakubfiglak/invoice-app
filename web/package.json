@@ -26,6 +26,7 @@
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
     "autoprefixer": "^10.4.13",
+    "fishery": "^2.2.2",
     "postcss": "^8.4.21",
     "postcss-loader": "^7.0.2",
     "storybook-tailwind-dark-mode": "^1.0.15",

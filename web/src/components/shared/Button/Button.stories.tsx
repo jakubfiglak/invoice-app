@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import type { ComponentMeta, ComponentStory } from '@storybook/react'
 
 import Button from './Button'
@@ -40,5 +39,5 @@ Danger.args = {
 export default {
   title: 'Components/shared/Button',
   component: Button,
-  args: { children: faker.lorem.word() },
+  args: { children: 'Click me!' },
 } as ComponentMeta<typeof Button>

@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker'
-import userEvent from '@testing-library/user-event'
 
-import { render, screen } from '@redwoodjs/testing/web'
+import { render, screen, userEvent } from 'src/test/utils'
 
 import Input from './Input'
 

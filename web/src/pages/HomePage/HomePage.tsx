@@ -8,7 +8,7 @@ const HomePage = () => {
     <>
       <MetaTags title="Home" description="Home page" />
 
-      <div className="mx-auto my-12 max-w-2xl space-y-6">
+      <div className="space-y-6 dark:text-white">
         <h1 className="text-xl font-bold">Lorem ipsum dolor sit amet.</h1>
 
         <h2 className="text-lg font-bold">Lorem ipsum dolor sit amet.</h2>

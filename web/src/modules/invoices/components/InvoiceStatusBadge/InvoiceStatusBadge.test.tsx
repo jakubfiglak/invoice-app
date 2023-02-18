@@ -15,8 +15,6 @@ describe('InvoiceStatusBadge', () => {
 
     render(<InvoiceStatusBadge status={status} />)
 
-    screen.debug()
-
     expect(screen.getByText(status, { exact: false })).toBeInTheDocument()
   })
 })

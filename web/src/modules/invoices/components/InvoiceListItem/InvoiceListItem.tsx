@@ -42,7 +42,7 @@ const InvoiceListItem = ({
             {getInvoiceNumberFromId(id)}
           </h4>
           <span className="text-light-slate-gray dark:text-white">
-            {customerName}
+            {customerName || 'N/A'}
           </span>
         </div>
         <div className="flex items-center justify-between @xl:gap-10">

@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 import { InvoiceStatus } from 'types/graphql'
 
-import { Link } from '@redwoodjs/router'
+import { Link, routes } from '@redwoodjs/router'
 
 import { getInvoiceNumberFromId } from 'src/modules/invoices/utils/get-invoice-number-from-id'
 import { formatDate, formatMoney } from 'src/utils'
@@ -29,10 +29,9 @@ const InvoiceListItem = ({
 }: IInvoiceListItemProps) => {
   return (
     <Link
-      // TODO: change this to routes.invoices({ id })
-      to="/"
+      to={routes.invoice({ id })}
       className={twMerge(
-        'block rounded-lg border-lavender-purple bg-white p-6 text-sm shadow-md @container hover:border focus:border focus:outline-0 dark:bg-night-blue',
+        'block rounded-lg border border-transparent bg-white p-6 text-sm shadow-md transition-colors @container hover:border hover:border-lavender-purple focus:border focus:border-lavender-purple focus:outline-0 dark:bg-night-blue',
         className
       )}
     >

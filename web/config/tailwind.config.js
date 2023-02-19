@@ -21,6 +21,7 @@ module.exports = {
       whisper: '#F9FAFE',
       martian: '#373B53',
       turquoise: '#33D69F',
+      transparent: 'transparent',
     },
     fontSize: {
       xs: [

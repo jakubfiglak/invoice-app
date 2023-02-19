@@ -14,11 +14,14 @@ module.exports = {
       'black-russian': '#0C0E16',
       'coral-red': '#EC5757',
       'pastel-red': '#FF9797',
+      'dark-orange': '#FF8F00',
       'white-smoke': '#F8F8FB',
       eclipse: '#141625',
       white: '#FFFFFF',
       whisper: '#F9FAFE',
       martian: '#373B53',
+      turquoise: '#33D69F',
+      transparent: 'transparent',
     },
     fontSize: {
       xs: [
@@ -63,6 +66,6 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/container-queries')],
   darkMode: 'class',
 }

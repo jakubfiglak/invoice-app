@@ -17,6 +17,6 @@
   }
 
   body {
-    @apply text-black-russian bg-white-smoke dark:bg-eclipse
+    @apply text-black-russian bg-white-smoke dark:bg-eclipse dark:text-white
   }
 }

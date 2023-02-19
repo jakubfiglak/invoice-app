@@ -5888,6 +5888,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tailwindcss/container-queries@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@tailwindcss/container-queries@npm:0.1.0"
+  peerDependencies:
+    tailwindcss: ">=3.2.0"
+  checksum: 3bc2d88ac327a5aa6bbac07a929062c58c0b001a410c4873c8227fe6d66d58dbc0df4b831d3c86efe38f3cb564fa1b0c596e3b6bd51b310254c3e7307274d963
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^8.0.0, @testing-library/dom@npm:^8.11.1":
   version: 8.20.0
   resolution: "@testing-library/dom@npm:8.20.0"
@@ -24458,6 +24467,7 @@ __metadata:
     "@redwoodjs/forms": 3.8.0
     "@redwoodjs/router": 3.8.0
     "@redwoodjs/web": 3.8.0
+    "@tailwindcss/container-queries": ^0.1.0
     autoprefixer: ^10.4.13
     class-variance-authority: ^0.4.0
     fishery: ^2.2.2

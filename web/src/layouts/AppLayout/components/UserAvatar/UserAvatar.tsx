@@ -7,7 +7,10 @@ const UserAvatar = () => {
 
   return (
     <img
-      src={currentUser?.avatarUrl || avatarPlaceholder}
+      src={
+        (currentUser as { avatarUrl?: string } | null)?.avatarUrl ||
+        avatarPlaceholder
+      }
       alt="User avatar"
       className="h-8 w-8 rounded-full lg:h-10 lg:w-10"
     />

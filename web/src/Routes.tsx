@@ -11,6 +11,8 @@ const Routes = () => {
       <Route path="/reset-password" page={ResetPasswordPage} name="resetPassword" />
       <Private unauthenticated="login" wrap={AppLayout}>
         <Route path="/" page={HomePage} name="home" />
+        <Route path="/invoices" page={InvoicesPage} name="invoices" />
+        <Route path="/invoices/{id:String}" page={InvoicePage} name="invoice" />
       </Private>
       <Route notfound page={NotFoundPage} />
     </Router>

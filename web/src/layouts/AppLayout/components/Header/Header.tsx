@@ -44,7 +44,7 @@ const Header = ({ className }: IHeaderProps) => {
             </li>
             <li>
               <NavLink
-                to={routes.invoices()}
+                to={routes.products()}
                 activeClassName="[&_svg]:text-light-steel-blue"
               >
                 <CubeIcon className="h-6 w-6 text-steel-blue transition-colors hover:text-light-steel-blue lg:h-8 lg:w-8" />

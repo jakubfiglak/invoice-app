@@ -5,7 +5,7 @@ import { InvoiceStatus } from 'types/graphql'
 import InvoicesListCell from '../../components/InvoicesListCell'
 
 const InvoicesView = () => {
-  const [status, setStatus] = useState<InvoiceStatus | undefined>(undefined)
+  const [status] = useState<InvoiceStatus | undefined>(undefined)
 
   return (
     <div>

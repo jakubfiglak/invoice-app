@@ -13,6 +13,7 @@
     ]
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.16",
     "@redwoodjs/auth": "3.8.0",
     "@redwoodjs/forms": "3.8.0",
     "@redwoodjs/router": "3.8.0",

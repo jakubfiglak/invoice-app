@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 
+import { testIds } from 'src/test/ids'
 import { render, screen, userEvent } from 'src/test/utils'
 
 import ThemeSwitch from './ThemeSwitch'
@@ -20,10 +21,10 @@ describe('ThemeSwitch', () => {
 
     const button = screen.getByRole('button', { name: /toggle theme/i })
 
-    expect(screen.getByTestId('moon-icon')).toBeInTheDocument()
+    expect(screen.getByTestId(testIds.darkModeIcon)).toBeInTheDocument()
 
     await userEvent.click(button)
 
-    expect(screen.getByTestId('sun-icon')).toBeInTheDocument()
+    expect(screen.getByTestId(testIds.lightModeIcon)).toBeInTheDocument()
   })
 })

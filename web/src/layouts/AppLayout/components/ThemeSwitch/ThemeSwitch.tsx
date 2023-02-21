@@ -1,4 +1,5 @@
 import { useTheme } from 'src/providers/theme/ThemeContext'
+import { testIds } from 'src/test/ids'
 
 import MoonIcon from '../../assets/moon.svg'
 import SunIcon from '../../assets/sun.svg'
@@ -13,9 +14,9 @@ const ThemeSwitch = ({ className }: IThemeSwitchProps) => {
   return (
     <button onClick={toggleTheme} className={className}>
       {theme === 'light' ? (
-        <MoonIcon data-testid="moon-icon" />
+        <MoonIcon data-testid={testIds.darkModeIcon} />
       ) : (
-        <SunIcon data-testid="sun-icon" />
+        <SunIcon data-testid={testIds.lightModeIcon} />
       )}
       <span className="sr-only">Toggle theme</span>
     </button>

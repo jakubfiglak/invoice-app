@@ -1,5 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 
+import { testIds } from 'src/test/ids'
+
 import Logo from '../../assets/logo.svg'
 import ThemeSwitch from '../ThemeSwitch'
 import UserAvatar from '../UserAvatar'
@@ -19,7 +21,7 @@ const Header = ({ className }: IHeaderProps) => {
       <div className="flex flex-grow items-center justify-between border-r border-slate-gray pr-6 sm:pr-8 lg:flex-col lg:border-b lg:border-r-0 lg:pr-0 lg:pb-8">
         <Logo
           className="h-[72px] w-[72px] sm:h-20 sm:w-20 lg:h-24 lg:w-24"
-          data-testid="logo"
+          data-testid={testIds.logo}
         />
         <ThemeSwitch />
       </div>

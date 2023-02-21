@@ -3,6 +3,8 @@ import type { ComponentProps } from 'react'
 import type { VariantProps } from 'class-variance-authority'
 import { twMerge } from 'tailwind-merge'
 
+import { testIds } from 'src/test/ids'
+
 import PlusIcon from './icon-plus.svg'
 import { variants } from './variants'
 
@@ -16,7 +18,7 @@ const Button = ({ children, variant, className, ...rest }: IButtonProps) => {
       {variant === 'primary-with-icon' && (
         <span
           className="flex h-8 w-8 items-center justify-center rounded-full bg-white"
-          data-testid="icon"
+          data-testid={testIds.addIcon}
         >
           <PlusIcon />
         </span>

@@ -19,4 +19,4 @@ export const success: ComponentStory<typeof Success> = (args) => {
   return Success ? <Success {...standard()} {...args} /> : <></>
 }
 
-export default { title: 'Cells/InvoicesListCell' }
+export default { title: 'Cells/invoices/InvoicesListCell' }

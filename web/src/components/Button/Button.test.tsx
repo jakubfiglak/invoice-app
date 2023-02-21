@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 
+import { testIds } from 'src/test/ids'
 import { render, screen, within, userEvent } from 'src/test/utils'
 
 import Button from './Button'
@@ -33,6 +34,6 @@ describe('Button', () => {
 
     const button = screen.getByRole('button', { name: text })
 
-    expect(within(button).getByTestId('icon')).toBeInTheDocument()
+    expect(within(button).getByTestId(testIds.addIcon)).toBeInTheDocument()
   })
 })

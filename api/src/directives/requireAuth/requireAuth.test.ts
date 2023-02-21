@@ -18,6 +18,7 @@ describe('requireAuth directive', () => {
           name: 'test',
           email: 'test@example.com',
           avatarUrl: '',
+          role: 'USER',
         },
       },
     })

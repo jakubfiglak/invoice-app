@@ -338,4 +338,21 @@ export const Invoice: InvoiceRelationResolvers = {
 
     return items || []
   },
+  totalAmount: async (_obj, { root }) => {
+    const items = await db.invoice
+      .findUnique({ where: { id: root?.id } })
+      .items()
+
+    if (!items) {
+      return 0
+    }
+
+    return items.reduce((acc, curr) => {
+      if (!curr?.price || !curr?.quantity) {
+        return acc
+      }
+
+      return acc + curr.price * curr.quantity
+    }, 0)
+  },
 }

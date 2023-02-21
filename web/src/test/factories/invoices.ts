@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
-import type { Invoice } from 'types/graphql'
+import type { Invoice, InvoiceStatus } from 'types/graphql'
 
 import { addressFactory } from './addresses'
 import { customerFactory } from './customers'
@@ -16,7 +16,11 @@ export const invoiceFactory = Factory.define<Invoice>(() => {
     id: faker.datatype.uuid(),
     paymentDue: faker.date.future().toISOString(),
     paymentTerms: faker.datatype.number({ max: 30 }),
-    status: 'PENDING',
+    status: faker.helpers.arrayElement<InvoiceStatus>([
+      'PENDING',
+      'PAID',
+      'DRAFT',
+    ]),
     description: faker.lorem.paragraph(),
     author,
     authorId: author.id,

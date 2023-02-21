@@ -315,7 +315,7 @@ describe('products service', () => {
     scenario(
       'updates a product if user is an admin',
       async (scenario: StandardScenario) => {
-        mockCurrentUser({ ...currentUser, roles: 'ADMIN' })
+        mockCurrentUser({ ...currentUser, role: 'ADMIN' } as CurrentUser)
 
         const newName = faker.random.word()
         const newPrice = faker.datatype.number()
@@ -367,7 +367,7 @@ describe('products service', () => {
     scenario(
       'deletes a product if user is an admin',
       async (scenario: StandardScenario) => {
-        mockCurrentUser({ ...currentUser, roles: 'ADMIN' })
+        mockCurrentUser({ ...currentUser, role: 'ADMIN' } as CurrentUser)
 
         const result = await deleteProduct({
           id: scenario.product.secondCreatedByAnotherUser.id,

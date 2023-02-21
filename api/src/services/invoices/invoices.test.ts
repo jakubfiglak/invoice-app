@@ -827,7 +827,7 @@ describe('invoices service', () => {
     scenario(
       'deletes an invoice if user is an admin',
       async (scenario: StandardScenario) => {
-        mockCurrentUser({ ...currentUser, roles: 'ADMIN' })
+        mockCurrentUser({ ...currentUser, role: 'ADMIN' } as CurrentUser)
 
         const result = await deleteInvoice({
           id: scenario.invoice.draftCreatedByAnotherUser.id,

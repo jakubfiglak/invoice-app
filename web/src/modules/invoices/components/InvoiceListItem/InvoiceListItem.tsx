@@ -4,6 +4,7 @@ import { InvoiceStatus } from 'types/graphql'
 import { Link, routes } from '@redwoodjs/router'
 
 import { getInvoiceNumberFromId } from 'src/modules/invoices/utils/get-invoice-number-from-id'
+import { testIds } from 'src/test/ids'
 import { formatDate, formatMoney } from 'src/utils'
 
 import InvoiceStatusBadge from '../InvoiceStatusBadge'
@@ -34,6 +35,7 @@ const InvoiceListItem = ({
         'block rounded-lg border border-transparent bg-white p-6 text-sm shadow-md transition-colors @container hover:border hover:border-lavender-purple focus:border focus:border-lavender-purple focus:outline-0 dark:bg-night-blue',
         className
       )}
+      data-testid={testIds.invoiceListItem(id)}
     >
       <div className="justify-between @xl:flex">
         <div className="mb-6 flex items-center justify-between @xl:mb-0 @xl:gap-8">

@@ -14,6 +14,7 @@ export const schema = gql`
     items: [InvoiceItem]!
     author: User!
     authorId: String!
+    totalAmount: Int
   }
 
   enum InvoiceStatus {

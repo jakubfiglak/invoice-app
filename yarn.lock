@@ -20195,7 +20195,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.0.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -24483,7 +24483,6 @@ __metadata:
     fishery: ^2.2.2
     postcss: ^8.4.21
     postcss-loader: ^7.0.2
-    prop-types: 15.8.1
     react: 17.0.2
     react-dom: 17.0.2
     storybook-tailwind-dark-mode: ^1.0.15

@@ -3,12 +3,6 @@ import { render, screen } from 'src/test/utils'
 import { Loading, Empty, Failure, Success } from './InvoicesCountCell'
 import { standard } from './InvoicesCountCell.mock'
 
-// Generated boilerplate tests do not account for all circumstances
-// and can fail without adjustments, e.g. Float and DateTime types.
-//           Please refer to the RedwoodJS Testing Docs:
-//        https://redwoodjs.com/docs/testing#testing-cells
-// https://redwoodjs.com/docs/testing#jest-expect-type-considerations
-
 describe('InvoicesCountCell', () => {
   it('renders Loading successfully', () => {
     expect(() => {
@@ -54,9 +48,7 @@ describe('InvoicesCountCell', () => {
     render(<Success invoices={invoices} status={status} />)
 
     expect(
-      screen.getByText(`${invoices.length} ${status} invoices`, {
-        exact: false,
-      })
+      screen.getByText(`${invoices.length} ${status.toLowerCase()} invoices`)
     ).toBeInTheDocument()
   })
 

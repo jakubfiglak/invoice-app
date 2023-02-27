@@ -48,7 +48,7 @@ export const Success = ({ invoices, status, className }: ISuccessProps) => {
   return (
     <p className={twMerge('text-sm', className)}>
       <span className="lg:hidden">
-        {invoices.length} {status ? status.toLowerCase() : ''}invoices
+        {invoices.length} {status ? `${status.toLowerCase()} ` : ''}invoices
       </span>
       <span className="hidden lg:inline">
         There are {invoices.length} {status ? status.toLowerCase() : 'total'}{' '}

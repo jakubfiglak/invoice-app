@@ -8,7 +8,12 @@ import InvoiceStatusFilterSelect from './InvoiceStatusFilterSelect'
 describe('InvoiceStatusFilterSelect', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<InvoiceStatusFilterSelect />)
+      render(
+        <InvoiceStatusFilterSelect
+          onChange={(value) => console.log(value)}
+          value="ALL"
+        />
+      )
     }).not.toThrow()
   })
 })

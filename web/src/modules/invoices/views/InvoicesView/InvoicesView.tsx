@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { navigate, routes, useParams } from '@redwoodjs/router'
 
 import Button from 'src/components/Button'
-import { InvoiceFilterStatus } from 'src/modules/types'
+import { InvoiceFilterStatus } from 'src/modules/invoices/types'
 
 import InvoicesCountCell from '../../components/InvoicesCountCell'
 import InvoicesListCell from '../../components/InvoicesListCell'

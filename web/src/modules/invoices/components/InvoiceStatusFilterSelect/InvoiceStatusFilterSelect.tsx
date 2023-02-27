@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { twMerge } from 'tailwind-merge'
 
-import { InvoiceFilterStatus } from 'src/modules/types'
+import { InvoiceFilterStatus } from 'src/modules/invoices/types'
 
 import Chevron from '../../assets/chevron.svg'
 

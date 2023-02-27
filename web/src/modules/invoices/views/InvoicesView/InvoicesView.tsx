@@ -1,24 +1,14 @@
-import { useEffect } from 'react'
-
-import { navigate, routes, useParams } from '@redwoodjs/router'
+import { navigate, routes } from '@redwoodjs/router'
 
 import Button from 'src/components/Button'
 
 import InvoicesCountCell from '../../components/InvoicesCountCell'
 import InvoicesListCell from '../../components/InvoicesListCell'
 import InvoiceStatusFilterSelect from '../../components/InvoiceStatusFilterSelect'
-import { parseStatus } from '../../utils'
+import { useStatus } from '../../utils'
 
 const InvoicesView = () => {
-  const params = useParams()
-
-  useEffect(() => {
-    if (!params.status) {
-      navigate(routes.invoices({ ...params, status: 'all' }))
-    }
-  }, [params])
-
-  const status = parseStatus(params.status)
+  const status = useStatus()
 
   return (
     <div>

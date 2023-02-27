@@ -7,9 +7,8 @@ import { getInvoiceNumberFromId } from 'src/modules/invoices/utils/get-invoice-n
 import { testIds } from 'src/test/ids'
 import { formatDate, formatMoney } from 'src/utils'
 
+import Chevron from '../../assets/chevron.svg'
 import InvoiceStatusBadge from '../InvoiceStatusBadge'
-
-import Chevron from './chevron.svg'
 
 interface IInvoiceListItemProps {
   id: string

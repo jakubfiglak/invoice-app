@@ -17,7 +17,7 @@ const Header = ({ className }: IHeaderProps) => {
   return (
     <header
       className={twMerge(
-        'z-10 flex items-center justify-between bg-martian dark:bg-night-blue lg:h-full lg:w-24 lg:flex-col lg:rounded-tr-[20px] lg:rounded-br-[20px]',
+        'z-20 flex items-center justify-between bg-martian dark:bg-night-blue lg:h-full lg:w-24 lg:flex-col lg:rounded-tr-[20px] lg:rounded-br-[20px]',
         className
       )}
     >

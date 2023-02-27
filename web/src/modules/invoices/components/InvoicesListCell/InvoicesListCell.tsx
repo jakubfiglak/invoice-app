@@ -28,11 +28,11 @@ export const QUERY = gql`
   }
 `
 
-interface CommonProps {
+interface ICommonProps {
   className?: string
 }
 
-export const Loading = ({ className }: CommonProps) => {
+export const Loading = ({ className }: ICommonProps) => {
   return (
     <div className={twMerge('space-y-4 @container', className)}>
       <Skeleton count={5} className="h-32 @lg:h-20" />
@@ -40,7 +40,7 @@ export const Loading = ({ className }: CommonProps) => {
   )
 }
 
-export const Empty = ({ className }: CommonProps) => {
+export const Empty = ({ className }: ICommonProps) => {
   return (
     <div className={twMerge('mx-auto max-w-[240px] text-center', className)}>
       <Placeholder
@@ -64,7 +64,7 @@ export const Failure = ({
 
 interface ISuccessProps
   extends CellSuccessProps<InvoicesListQuery, InvoicesListQueryVariables>,
-    CommonProps {}
+    ICommonProps {}
 
 export const Success = ({ invoices, className }: ISuccessProps) => {
   return (

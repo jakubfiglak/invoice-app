@@ -13,15 +13,17 @@
     ]
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.12",
+    "@heroicons/react": "^2.0.16",
     "@redwoodjs/auth": "3.8.0",
     "@redwoodjs/forms": "3.8.0",
     "@redwoodjs/router": "3.8.0",
     "@redwoodjs/web": "3.8.0",
     "class-variance-authority": "^0.4.0",
-    "prop-types": "15.8.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "tailwind-merge": "^1.9.1"
+    "tailwind-merge": "^1.9.1",
+    "zod": "^3.20.6"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
